@@ -1,53 +1,62 @@
 
-#Creates resource group
 resource "azurerm_resource_group" "rg" {
-    name     = "shira-rg"
-    location = var.location
+  name     = "shira-rg"
+  location = var.location
 }
 
 #Creates ENV1
+module "vnet1" {
+  source             = "./modules/network"
+  vnet_name          = var.resource_group
+  resource_group     = var.resource_group
+  vnet_address_space = var.address_space
+  subnets            = var.subnets1_list
 
-module "network1" {
-  source = "./modules/network"
+}
 
-  vn_name = "shira-vnet1"
-  vnet_address_space = ["10.0.0.0/16"]
-  sub_name = "shira-subnet-1"
-  vnet_address_prefix = ["10.0.1.0/24"]
-  nsg_name = "shira-nsg-1"
-  pip_name = "shira-publicip-1"
-  vmnic_name = "shira-nic-1"
-
+module "nsg1" {
+  source         = "./modules/nsg"
+  resource_group = var.resource_group
+  nsg_name       = var.nsg1_name
+  nsg_rules      = var.nsg_rules
+  subnet_id      = module.vnet1.subnet_id
 }
 
 module "virtual_machine_1" {
-  source = "./modules/vm"
-
-  hostname = "shira-vm-1"
-  vmnic_id = module.network1.vmnic_id
+  source         = "./modules/vm"
+  p_ip_name      = var.publicip1_name
+  vmnic_name     = var.nic1_name
+  subnet_id      = module.vnet1.subnet_ids[0]
+  ipconf_name    = var.ipconf1_name
+  hostname       = var.hostname1
+  resource_group = var.resource_group
 }
-
 
 
 #Creates EVN2
+module "vnet2" {
+  source             = "./modules/network"
+  vnet_name          = var.vnet2_name
+  resource_group     = var.resource_group
+  vnet_address_space = var.address_space
+  subnets            = var.subnets2_list
+}
 
-module "network2" {
-  source = "./modules/network"
-
-  vn_name = "shira-vnet2"
-  vnet_address_space = ["20.0.0.0/16"]
-  sub_name = "shira-subnet-2"
-  vnet_address_prefix = ["20.0.1.0/24"]
-  nsg_name = "shira-nsg-2"
-  pip_name = "shira-publicip-2"
-  vmnic_name = "shira-nic-2"
-
+module "nsg2" {
+  source         = "./modules/nsg"
+  resource_group = var.resource_group
+  nsg_name       = var.nsg2_name
+  nsg_rules      = var.nsg_rules
+  subnet_ids     = module.vnet2.subnet_id
 }
 
 module "virtual_machine_2" {
-  source = "./modules/vm"
-
-  hostname = "shira-vm-2"
-  vmnic_id = module.network2.vmnic_id
+  source         = "./modules/vm"
+  p_ip_name      = var.publicip2_name
+  vmnic_name     = var.nic2_name
+  subnet_id      = module.vnet2.subnet_ids[0]
+  ipconf_name    = var.ipconf2_name
+  hostname       = var.hostname2
+  resource_group = var.resource_group
 }
 
