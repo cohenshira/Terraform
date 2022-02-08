@@ -1,0 +1,19 @@
+{
+    "if": {
+        "anyOf": [{
+            "not": {
+                "field": "location",
+                "equals": "${rglocation}"
+                }
+            },
+            {
+                "value": "[length(field('Microsoft.Compute/virtualMachines/osProfile.computerName'))]",
+                "greater": 15
+            }
+            
+        ]
+    },
+    "then": {
+      "effect": "Deny"
+        }
+     }

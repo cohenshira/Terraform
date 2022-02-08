@@ -1,0 +1,15 @@
+{
+    "if": {
+      "count": {
+        "field": "Microsoft.Network/virtualNetworks/subnets[*]",
+        "where": {
+          "contains": "firewall",
+          "field": "Microsoft.Network/virtualNetworks/subnets[*].name"
+        }
+      },
+      "greater": 2
+    },
+    "then": {
+      "effect": "Deny"
+    }
+  }
