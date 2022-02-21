@@ -32,3 +32,14 @@ variable "is_manual_connection" {
   type        = bool
   description = "Manual connection to the remote resource"
 }
+
+variable "private_dns_zone_name" {
+  type        = string
+  description = "Name for the dns zone"
+  default     = "privatelink.blob.core.windows.net"
+}
+
+variable "vnet_id" {
+  type = string
+  description = "Virtual network ID"
+}

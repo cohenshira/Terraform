@@ -134,6 +134,7 @@ module "storage-account" {
   account_replication_type = local.account_replication_type
   is_manual_connection     = local.is_manual_connection
   subnet_id                = module.spoke-vnet.subnet_ids_list[0]
+  vnet_id                  = module.spoke-vnet.vnet_id
 }
 
 module "spoke-virtual-machine" {
